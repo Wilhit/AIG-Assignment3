@@ -8,6 +8,7 @@ course_name="empty";
 preRstatus="empty";
 course_count=0;
 cstable= DataFrame(courseName=[],prerequisite=[],count=[])
+fwdCheck= DataFrame(Variables=[],Domains=[])
 prs = DataFrame(dayOfTheWeek=["Monday","Tuesday","Wednesday","Thursday","Friday"],prerequisiteStatues=[false,false,false,false,false])
 function registerCourse()
 
@@ -21,8 +22,12 @@ global course_name=readline()
 print("Is course prerequiste? ")
 global preRstatus = readline()
 push!(cstable,(course_name,preRstatus,course_count))
+push!(fwdCheck,(course_name,"M,T,W,TH,F"))
 end
 end
+###############################################
+
+
 
 ###############################################
 function shiftCourseThursday(course,pr)
@@ -30,11 +35,15 @@ function shiftCourseThursday(course,pr)
     if table[5][e]== "empty" && prs[2][4]!= true && pr=="yes" && cstable[3][e]==0
         table[5][e]=course
         prs[2][4]=true
+        show(table)
+        show(fwdCheck)
 
 
  end
     end
 end
+##############################################
+
 
 
 ###############################################
@@ -45,9 +54,13 @@ function shiftCourseWednesday(course,pr)
         table[4][e]=course
         prs[2][3]=true
         cstable[3][e]= 1
+        show(table)
+        show(fwdCheck)
     elseif pr=="no" && table[4][e]=="empty" && cstable[3][e]==0
             table[4][e]=course
              cstable[3][e]=1
+             show(table)
+             show(fwdCheck)
         elseif table[4][e]== "empty" && prs[2][3]== true && pr=="yes"
             shiftCourseThursday(cstable[1][e],cstable[2][e])
  end
@@ -60,6 +73,8 @@ function shiftCourseTuesday(course,pr)
     if table[3][e]== "empty" && prs[2][2]!= true && pr=="yes"
         table[3][e]=course
         prs[2][2]=true
+        show(table)
+        show(fwdCheck)
     elseif pr=="no" && table[3][e]=="empty"
             table[3][e]=course
 
@@ -76,16 +91,23 @@ function start_scheduling()
            if cstable[2][e]=="yes" && table[2][e]=="empty" && prs[2][1]!=true && cstable[3][e]==0
                table[2][e]= cstable[1][e]
                prs[2][1]=true
+
                cstable[3][e]=1
+               show(table)
+               show(fwdCheck)
            elseif cstable[2][e]=="no" && table[2][e]=="empty" && cstable[3][e]==0
                table[2][e]=cstable[1][e]
                cstable[3][e]=1
+               show(table)
+               show(fwdCheck)
            elseif  cstable[2][e]=="yes" && prs[2][1]==true
                shiftCourseTuesday(cstable[1][e],cstable[2][e])
                 end
             if cstable[2][e]=="no" && table[2][e]=="empty" && cstable[3][e]==0
                 table[2][e]=cstable[1][e]
                 cstable[3][e]=1
+                show(table)
+                show(fwdCheck)
             end
 
             end
@@ -93,6 +115,7 @@ function start_scheduling()
             if e==4
                 td=true
             end
+            
             #####################################
             if td && e > 4
                 print("E is $e")
@@ -100,9 +123,13 @@ function start_scheduling()
                  table[3][t]= cstable[1][e]
                  prs[2][2]=true
                  cstable[3][e]=1
+                 show(table)
+                 show(fwdCheck)
              elseif cstable[2][e]=="no" && table[2][t]=="empty" && cstable[3][e]==0
                  table[3][t]=cstable[1][e]
                  cstable[3][e]=1
+                 show(table)
+                 show(fwdCheck)
              elseif  cstable[2][e]=="yes" && prs[2][2]==true
                  shiftCourseWednesday(cstable[1][e],cstable[2][e])
                   end
@@ -115,24 +142,7 @@ function start_scheduling()
 end# end of function
 
 
-function addCourseMonday()
-    for e in 1:size(cstable)[1]
-        if e < 5
-    if table[1][e]== "empty"
-        if cstable[2][e]=="yes" && prs[2][e]!=true && prs[1][e]=="Monday"
-     table[1][e] = cstable[1][e]
-     prs[2][e]=true
- elseif cstable[2][e]=="no"
-     table[1][e] = cstable[1][e]
-elseif  cstable[2][e]=="yes" && prs[2][1]==true
-    shiftCourseTuesday(cstable[1][e],cstable[2][e])
 
- end
-    end
-
-end
-end # end of loop
-end#end of function
 
 ###############################################
 
