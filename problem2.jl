@@ -1,4 +1,3 @@
-#Still a mess
 using Games
 using Printf
 
